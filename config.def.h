@@ -1,20 +1,30 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const char *fonts[] = {
-	"monospace:size=10"
+	"monospace:size=7.5"
 };
-static const char dmenufont[]       = "monospace:size=10";
+static const char dmenufont[]       = "monospace:size=7.5";
 static const char normbordercolor[] = "#444444";
 static const char normbgcolor[]     = "#222222";
 static const char normfgcolor[]     = "#bbbbbb";
-static const char selbordercolor[]  = "#005577";
-static const char selbgcolor[]      = "#005577";
+static const char selbordercolor[]  = "#005500";
+static const char selbgcolor[]      = "#000000";
 static const char selfgcolor[]      = "#eeeeee";
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const char listbordercolor[]  = "#005500";
+static const char listbgcolor[]      = "#005500";
+static const char listfgcolor[]      = "#eeeeee";
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
+static const unsigned int gapheight = 4;	/* vertical gap between pixels of windows */
+static const unsigned int gapwidth  = 4;	/* horizontal gap between pixels of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
+static const int topbar             = 0;        /* 0 means bottom bar */
+static const unsigned int listitemlen = 0;	/* length in pixels of list item max len. 0 means no max */
+static const int listhidesel = 0;		/* 0 means show the selected in list */
+static const int listhidecount = 1;		/* hide the list if there are equal or fewer than items in it */
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -25,8 +35,9 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+//	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+//	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ "Xmessage", NULL,	  "xmessage", 0,	    1,		 -1 },
 };
 
 /* layout(s) */
@@ -54,8 +65,11 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-b", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static const char *termcmd[]  = { "urxvt", NULL };
+static const char *voldowncmd[]  = { "volumedown", NULL };
+static const char *volupcmd[]  = { "volumeup", NULL };
+static const char *dwmcatchercmd[]  = { "dwmcatcher", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -92,6 +106,9 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,           {.v = dwmcatchercmd} },
+	{ 0,				XF86XK_AudioLowerVolume,	spawn,	   {.v = voldowncmd} },
+	{ 0,				XF86XK_AudioRaiseVolume,	spawn,	   {.v = volupcmd} },
 };
 
 /* button definitions */
@@ -110,4 +127,3 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-

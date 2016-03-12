@@ -59,7 +59,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeLast }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeList, SchemeLast }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -744,12 +744,39 @@ drawbar(Monitor *m)
 		drw_text(drw, x, 0, w, bh, stext, 0);
 	} else
 		x = m->ww;
+
+
+
+	int weex = x;
+
+
 	if ((w = x - xx) > bh) {
 		x = xx;
 		if (m->sel) {
 			drw_setscheme(drw, m == selmon ? &scheme[SchemeSel] : &scheme[SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, m->sel->name, 0);
 			drw_rect(drw, x + 1, 1, dx, dx, m->sel->isfixed, m->sel->isfloating, 0);
+
+			x+= TEXTW(m->sel->name);
+			drw_setscheme(drw, &scheme[SchemeList]);
+			w = 1;
+			int lhidei = 0;
+			for(c = m->clients; c && lhidei <= listhidecount; c = c->next) lhidei +=(ISVISIBLE(c) && !(listhidesel && c==m->sel));
+			if(lhidei > listhidecount) for(lhidei = 0, c = m->clients; c && w > 0; c = c->next){
+				if(!ISVISIBLE(c) || (listhidesel && c == m->sel))continue;
+				w = TEXTW(c->name);
+
+
+				if(lhidei)drw_rect(drw, weex + 1, 0, 0, bh, 1, 1, 0);
+
+				if(listitemlen && w > listitemlen) w = listitemlen;
+				if(weex-w < x) w = weex-x;
+				weex -= w;
+				drw_text(drw, weex, 0, w, bh, c->name, 0);
+				lhidei++;
+			}
+
+
 		} else {
 			drw_setscheme(drw, &scheme[SchemeNorm]);
 			drw_rect(drw, x, 0, w, bh, 1, 0, 1);
@@ -1591,6 +1618,9 @@ setup(void)
 	scheme[SchemeSel].border = drw_clr_create(drw, selbordercolor);
 	scheme[SchemeSel].bg = drw_clr_create(drw, selbgcolor);
 	scheme[SchemeSel].fg = drw_clr_create(drw, selfgcolor);
+	scheme[SchemeList].border = drw_clr_create(drw, listbordercolor);
+	scheme[SchemeList].bg = drw_clr_create(drw, listbgcolor);
+	scheme[SchemeList].fg = drw_clr_create(drw, listfgcolor);
 	/* init bars */
 	updatebars();
 	updatestatus();
@@ -1679,18 +1709,20 @@ tile(Monitor *m)
 		return;
 
 	if (n > m->nmaster)
-		mw = m->nmaster ? m->ww * m->mfact : 0;
+//		mw = m->nmaster ? m->ww * m->mfact: 0;
+		mw = m->nmaster ? m->ww * m->mfact + gapwidth: 0;
 	else
-		mw = m->ww;
+//		mw = m->ww;
+		mw = m->ww + gapwidth;
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
 			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
-			my += HEIGHT(c);
+			my += HEIGHT(c) + gapheight;
 		} else {
 			h = (m->wh - ty) / (n - i);
 			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
-			ty += HEIGHT(c);
+			ty += HEIGHT(c) + gapheight;
 		}
 }
 
