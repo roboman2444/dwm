@@ -1,10 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 
-#include <X11/XF86keysym.h>
+#include <X11/XF86keysym.h> // needed for volup and voldown
 
 /* appearance */
 static const char *fonts[] = {
-	"monospace:size=7.5"
+	"monospace:size=7.5:antialias=true"
 };
 static const char dmenufont[]       = "monospace:size=7.5";
 static const char normbordercolor[] = "#444444";
@@ -13,8 +13,8 @@ static const char normfgcolor[]     = "#bbbbbb";
 static const char selbordercolor[]  = "#005500";
 static const char selbgcolor[]      = "#000000";
 static const char selfgcolor[]      = "#eeeeee";
-static const char listbordercolor[]  = "#005500";
-static const char listbgcolor[]      = "#005500";
+static const char listbordercolor[]  = "#001111";
+static const char listbgcolor[]      = "#001111";
 static const char listfgcolor[]      = "#eeeeee";
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int gapheight = 4;	/* vertical gap between pixels of windows */
@@ -23,8 +23,8 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
 static const unsigned int listitemlen = 0;	/* length in pixels of list item max len. 0 means no max */
-static const int listhidesel = 0;		/* 0 means show the selected in list */
-static const int listhidecount = 1;		/* hide the list if there are equal or fewer than items in it */
+static const int listhidesel = 1;		/* 0 means show the selected in list */
+static const int listhidecount = 0;		/* hide the list if there are equal or fewer than items in it */
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
@@ -43,7 +43,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
