@@ -70,6 +70,7 @@ static const char *termcmd[]  = { "urxvt", NULL };
 static const char *voldowncmd[]  = { "volumedown", NULL };
 static const char *volupcmd[]  = { "volumeup", NULL };
 static const char *dwmcatchercmd[]  = { "dwmcatcher", NULL };
+static const char *bgcmd[]  = { "oncething.sh", NULL };
 static const char *lockcmd[]  = { "robolock", "-a" "/home/roboman2444/robolock/samplealert.sh", NULL};
 
 static Key keys[] = {
@@ -114,7 +115,8 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-	{ MODKEY|ShiftMask,             XK_r,      spawn,           {.v = dwmcatchercmd} },
+	{ MODKEY|ShiftMask,             XK_r,      spawn,          {.v = dwmcatchercmd} },
+	{ MODKEY|ShiftMask,             XK_b,     spawn,      	   {.v = bgcmd} },
 	{ 0,				XF86XK_AudioLowerVolume,	spawn,	   {.v = voldowncmd} },
 	{ 0,				XF86XK_AudioRaiseVolume,	spawn,	   {.v = volupcmd} },
 };
