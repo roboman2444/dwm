@@ -71,7 +71,9 @@ static const char *voldowncmd[]  = { "volumedown", NULL };
 static const char *volupcmd[]  = { "volumeup", NULL };
 static const char *dwmcatchercmd[]  = { "dwmcatcher", NULL };
 static const char *bgcmd[]  = { "oncething.sh", NULL };
-static const char *lockcmd[]  = { "robolock", "-a" "/home/roboman2444/robolock/samplealert.sh", NULL};
+static const char *lockcmd[]  = { "robolock", "-a", "/home/roboman2444/robolock/samplealert.sh", NULL};
+static const char *screenupcmd[]  = { "lighterfluid", "double", NULL};
+static const char *screendowncmd[]  = { "lighterfluid", "half", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -119,6 +121,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_b,     spawn,      	   {.v = bgcmd} },
 	{ 0,				XF86XK_AudioLowerVolume,	spawn,	   {.v = voldowncmd} },
 	{ 0,				XF86XK_AudioRaiseVolume,	spawn,	   {.v = volupcmd} },
+	{ 0,				XF86XK_MonBrightnessUp,		spawn,	   {.v = screenupcmd} },
+	{ 0,				XF86XK_MonBrightnessDown,	spawn,	   {.v = screendowncmd} },
 };
 
 /* button definitions */
