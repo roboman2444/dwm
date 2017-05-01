@@ -114,6 +114,7 @@ typedef struct {
 struct Monitor {
 	char ltsymbol[16];
 	float mfact;
+	int gapwidth, gapheight, wgapwidth, wgapheight;
 	int nmaster;
 	int num;
 	int by;               /* bar geometry */
@@ -202,6 +203,8 @@ static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
+static void setgap(const Arg *arg);
+static void setwgap(const Arg *arg);
 static void setup(void);
 static void showhide(Client *c);
 static void sigchld(int unused);
@@ -649,6 +652,10 @@ createmon(void)
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset[0] = m->tagset[1] = 1;
 	m->mfact = mfact;
+	m->gapwidth = gapwidth;
+	m->gapheight = gapheight;
+	m->wgapwidth = wgapwidth;
+	m->wgapheight = wgapheight;
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
@@ -1146,9 +1153,7 @@ maprequest(XEvent *e)
 		manage(ev->window, &wa);
 }
 
-void
-monocle(Monitor *m)
-{
+void monocle(Monitor *m){
 	unsigned int n = 0;
 	Client *c;
 
@@ -1158,7 +1163,7 @@ monocle(Monitor *m)
 	if (n > 0) /* override layout symbol */
 		snprintf(m->ltsymbol, sizeof m->ltsymbol, "[%d]", n);
 	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
+		resize(c, m->wx + m->wgapwidth, m->wy + m->wgapheight, m->ww - 2*(c->bw + m->wgapwidth), m->wh - 2*(c->bw + m->wgapheight), 0);
 }
 
 void
@@ -1574,6 +1579,38 @@ setmfact(const Arg *arg)
 	selmon->mfact = f;
 	arrange(selmon);
 }
+void setgap(const Arg *arg){
+	if (!arg || !selmon->lt[selmon->sellt]->arrange)
+		return;
+	int i = arg->i;
+	if(i == 0){
+		selmon->gapwidth = gapheight;
+		selmon->gapheight = gapheight;
+	} else {
+		selmon->gapwidth += i;
+		selmon->gapheight +=i;
+	}
+	if(selmon->gapwidth <0) selmon->gapwidth = 0;
+	if(selmon->gapheight <0) selmon->gapheight = 0;
+	arrange(selmon);
+}
+void
+setwgap(const Arg *arg)
+{
+	if (!arg || !selmon->lt[selmon->sellt]->arrange)
+		return;
+	int i = arg->i;
+	if(i == 0){
+		selmon->wgapwidth = wgapheight;
+		selmon->wgapheight = wgapheight;
+	} else {
+		selmon->wgapwidth += i;
+		selmon->wgapheight +=i;
+	}
+	if(selmon->wgapwidth <0) selmon->wgapwidth = 0;
+	if(selmon->wgapheight <0) selmon->wgapheight = 0;
+	arrange(selmon);
+}
 
 void
 setup(void)
@@ -1698,9 +1735,7 @@ tagmon(const Arg *arg)
 	sendmon(selmon->sel, dirtomon(arg->i));
 }
 
-void
-tile(Monitor *m)
-{
+void tile(Monitor *m){
 	unsigned int i, n, h, mw, my, ty;
 	Client *c;
 
@@ -1710,21 +1745,17 @@ tile(Monitor *m)
 
 	if (n > m->nmaster)
 		mw = m->nmaster ? m->ww * m->mfact: 0;
-//		mw = m->nmaster ? m->ww * m->mfact - gapwidth: 0;
 	else
 		mw = m->ww;
-//		mw = m->ww - gapwidth;
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
 			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
-			my += HEIGHT(c) + gapheight;
-//			my += HEIGHT(c);
+			my += HEIGHT(c) + m->gapheight;
 		} else {
 			h = (m->wh - ty) / (n - i);
-			resize(c, m->wx + mw + gapwidth , m->wy + ty, m->ww - mw - (2*c->bw) - gapwidth, h - (2*c->bw), 0);
-//			ty += HEIGHT(c);
-			ty += HEIGHT(c) + gapheight;
+			resize(c, m->wx + mw + m->gapwidth , m->wy + ty, m->ww - mw - (2*c->bw) - m->gapwidth, h - (2*c->bw), 0);
+			ty += HEIGHT(c) + m->gapheight;
 		}
 }
 
