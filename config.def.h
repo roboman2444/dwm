@@ -20,8 +20,8 @@ static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int gapheight = 4;	/* vertical gap between pixels of windows */
 static const unsigned int gapwidth  = 4;	/* horizontal gap between pixels of windows */
 
-static const unsigned int wgapheight = 4;	/* vertical gap between pixeels of windows and edge of screen */
-static const unsigned int wgapwidth  = 4;	/* horizontal gap between pixels of windows ^^^*/
+static const unsigned int wgapheight = 0;	/* vertical gap between pixeels of windows and edge of screen */
+static const unsigned int wgapwidth  = 0;	/* horizontal gap between pixels of windows ^^^*/
 
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
