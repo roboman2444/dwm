@@ -875,11 +875,12 @@ focusmon(const Arg *arg)
 		return;
 	if ((m = dirtomon(arg->i)) == selmon)
 		return;
-	unfocus(selmon->sel, 0); /* s/1/0/ fixes input focus issues
-					in gedit and anjuta */
+	unfocus(selmon->sel, 0);/* s/1/0/ fixes input focus issues
+				in gedit and anjuta */
 	selmon = m;
 	focus(NULL);
 }
+
 
 void
 focusstack(const Arg *arg)
