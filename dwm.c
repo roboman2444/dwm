@@ -1236,10 +1236,16 @@ movemouse(const Arg *arg)
 			}
 			if (!selmon->lt[selmon->sellt]->arrange || c->isfloating)
 				resize(c, nx, ny, c->w, c->h, 1);
+			//update statusbar
+			sprintf(stext, "%i: %i", nx, ny);
+			drawbar(selmon);
+
 			break;
 		}
 	} while (ev.type != ButtonRelease);
 	XUngrabPointer(dpy, CurrentTime);
+	//revert statusbar to usual
+	updatestatus();
 	if ((m = recttomon(c->x, c->y, c->w, c->h)) != selmon) {
 		sendmon(c, m);
 		selmon = m;
